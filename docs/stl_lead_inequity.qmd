@@ -1,0 +1,82 @@
+---
+title: "Lead Inequity Activity"
+format: html
+editor: visual
+execute: 
+  echo: true
+  warning: false
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+```
+
+## Read in data
+
+```{r}
+stl_lead <- read_delim(here::here("data", 
+                                "stl_blood_lead.csv"), delim = ";") %>%
+  clean_names() %>%
+  mutate(pct_elevated = as.numeric(str_replace(pct_elevated, ",", ".")))
+```
+
+```{r}
+# An overview:
+skimr::skim(stl_lead)
+
+# A few other things to explore
+dim(stl_lead)
+names(stl_lead)
+```
+
+```{r}
+stl_lead_prop <- stl_lead %>%
+  #select(pct_elevated, total_pop, white) %>% 
+  mutate(prop_white = white / total_pop * 100) #new column
+```
+
+# Scatterplot
+
+```{r, fig.height = 5, fig.width = 6}
+stl_lead_plot <- ggplot(data = stl_lead_prop, 
+                                  aes(x = prop_white, 
+                                      y = pct_elevated)) +
+  geom_point(colour = "red", 
+             alpha = 0.5,
+             aes(size = prop_white)) + # add size and color of points
+  scale_x_continuous(limits=c(0, 30)) +
+  labs(title = "% white population vs. % of children with elevated blood lead levels, 2015", 
+       x = "% of population that is white", 
+       y = "% of children with elevated blood lead levels") + #add x and y labels and title
+  theme_bw() #add theme
+
+stl_lead_plot
+```
+Populations with a moderate percent of white people had lower percents of children with elevated blood lead levels versus especially lower percents of white people but also somewhat higher percentages of white people.
+
+```{r}
+ggsave(plot = stl_lead_plot,
+       here::here("figs", "stl_lead_plot.png"),
+       width = 6,
+       height = 5)
+```
+
+# Histogram
+
+```{r, fig.height = 5, fig.width = 6}
+pct_elevated_hist <- ggplot(data = stl_lead_prop,
+                            aes(x = pct_elevated)) +
+  geom_histogram(fill = "blue", 
+                 color = "purple",
+                 size = 2)
+  
+  pct_elevated_hist
+```
+
+```{r}
+ggsave(plot = pct_elevated_hist,
+       here::here("figs", "pct_elevated_hist.jpg"),
+       width = 6,
+       height = 5)
+```
