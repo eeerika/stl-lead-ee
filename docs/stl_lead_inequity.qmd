@@ -45,7 +45,6 @@ stl_lead_plot <- ggplot(data = stl_lead_prop,
   geom_point(colour = "red", 
              alpha = 0.5,
              aes(size = prop_white)) + # add size and color of points
-  scale_x_continuous(limits=c(0, 30)) +
   labs(title = "% white population vs. % of children with elevated blood lead levels, 2015", 
        x = "% of population that is white", 
        y = "% of children with elevated blood lead levels") + #add x and y labels and title
@@ -53,7 +52,8 @@ stl_lead_plot <- ggplot(data = stl_lead_prop,
 
 stl_lead_plot
 ```
-Populations with a moderate percent of white people had lower percents of children with elevated blood lead levels versus especially lower percents of white people but also somewhat higher percentages of white people.
+
+Populations with a higher percent of white people had lower percents of children with elevated blood lead levels.
 
 ```{r}
 ggsave(plot = stl_lead_plot,
